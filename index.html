@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NKT 檢測參考圖</title>
+<style>
+  :root {
+    --teal: #1f3d46;
+    --gold: #d9b25a;
+    --bg: #f5f4ef;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Noto Sans TC", -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: #222;
+  }
+  header {
+    background: var(--teal);
+    color: #fff;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  header h1 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  header .subtitle {
+    font-size: 13px;
+    opacity: 0.75;
+  }
+  #region-select {
+    margin-left: auto;
+    padding: 8px 14px;
+    font-size: 15px;
+    border: 2px solid var(--gold);
+    border-radius: 6px;
+    background: #fff;
+    color: #222;
+    cursor: pointer;
+    min-width: 200px;
+  }
+  main {
+    max-width: 1100px;
+    margin: 20px auto;
+    padding: 0 16px 60px;
+  }
+  .image-container {
+    width: 100%;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    line-height: 0;
+  }
+  .image-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .text-panel {
+    background: #fff;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    margin-top: 16px;
+  }
+  .text-panel h2 {
+    color: var(--teal);
+    margin-top: 0;
+    border-bottom: 2px solid var(--gold);
+    padding-bottom: 6px;
+  }
+  .subtitle-line {
+    color: #777;
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  .link-table {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+  .link-table .cat {
+    background: #fafaf7;
+    border-left: 4px solid var(--gold);
+    padding: 12px 16px;
+    border-radius: 4px;
+  }
+  .link-table .cat h3 {
+    color: var(--teal);
+    margin: 0 0 8px;
+    font-size: 16px;
+  }
+  .link-table .cat ul {
+    margin: 0;
+    padding-left: 20px;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .sub-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .sub-list li {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+  }
+  .sub-list li:last-child { border-bottom: none; }
+  .sub-list .num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: var(--gold);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .sub-list .body .zh-name {
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--teal);
+  }
+  .sub-list .body .en-name {
+    font-size: 13px;
+    color: #888;
+    margin-left: 8px;
+  }
+  .sub-list .body .desc {
+    font-size: 14px;
+    color: #555;
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+  footer {
+    text-align: center;
+    padding: 20px;
+    color: #888;
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>NKT 檢測參考圖</h1>
+  <span class="subtitle">韌帶・肌肉分布</span>
+  <select id="region-select"></select>
+</header>
+<main>
+  <div class="image-container" id="img-container">
+    <img id="anatomy-img" alt="">
+  </div>
+  <div class="text-panel" id="text-panel" style="display:none"></div>
+</main>
+<footer>© 狂牛體能訓練中心 · 教練內部參考</footer>
+
+<script>
+const REGIONS = [
+  {
+    id: 'ankle',
+    name: '踝關節韌帶',
+    image: 'photos/Ankle Ligament.png',
+    extraPanel: {
+      title: '三角韌帶（Deltoid ligament）細分',
+      subtitle: '內側三角韌帶由以下五束組成，共同穩定踝內側',
+      items: [
+        { no: '①', zh: '前脛距部韌帶', en: 'Anterior tibiotalar ligament', desc: '由脛骨內踝前緣 → 距骨內側前方，限制距骨外移/外翻' },
+        { no: '②', zh: '後脛距部韌帶', en: 'Posterior tibiotalar ligament', desc: '由脛骨內踝後緣 → 距骨內側後突，限制距骨後移/外翻' },
+        { no: '③', zh: '脛跟部韌帶', en: 'Tibiocalcaneal ligament', desc: '由脛骨內踝 → 跟骨載距突，限制足跟外翻' },
+        { no: '④', zh: '脛舟部韌帶', en: 'Tibionavicular ligament', desc: '由脛骨內踝前緣 → 舟狀骨內側，支撐內側縱弓' },
+        { no: '⑤', zh: '脛距部韌帶', en: 'Tibiotalar ligament', desc: '統稱脛骨—距骨間纖維束，涵蓋前/後脛距韌帶之深層部分' }
+      ]
+    }
+  },
+  {
+    id: 'hip-anterior',
+    name: '髖關節韌帶（前側）',
+    image: 'photos/Hip Ligament Anterior.png'
+  },
+  {
+    id: 'hip-posterior',
+    name: '髖關節韌帶（後側）',
+    image: 'photos/Hip Ligament Posterior.png'
+  },
+  {
+    id: 'hip-link',
+    name: '髖韌帶—肌肉對應表',
+    image: null,
+    textContent: {
+      type: 'link-table',
+      title: '髖部韌帶與相關肌肉對應',
+      groups: [
+        { name: '薦結節韌帶 Sacrotuberous', items: ['股二頭肌 Biceps femoris', '臀大肌 Gluteus maximus', '半腱肌 Semitendinosus'] },
+        { name: '薦棘韌帶 Sacrospinous', items: ['骨盆底肌 Pelvic floor', '髖外旋肌群 External rotators'] },
+        { name: '腹股溝韌帶 Inguinal', items: ['髂腰肌 Psoas', '股直肌 Rectus femoris', '腹斜肌 Obliques', '腹橫肌 TVA', '內收肌群 Adductors'] },
+        { name: '髂腰韌帶 Iliolumbar', items: ['腰方肌 Quadratus lumborum', '髂肌 Iliac'] }
+      ]
+    }
+  },
+  {
+    id: 'hyoid',
+    name: '舌骨肌群',
+    image: 'photos/Hyoid Muscles.png'
+  },
+  {
+    id: 'shoulder',
+    name: '肩部韌帶',
+    image: 'photos/Shoulder Ligament.png'
+  }
+];
+
+const select = document.getElementById('region-select');
+const imgEl = document.getElementById('anatomy-img');
+const container = document.getElementById('img-container');
+const textPanel = document.getElementById('text-panel');
+
+REGIONS.forEach(r => {
+  const opt = document.createElement('option');
+  opt.value = r.id;
+  opt.textContent = r.name;
+  select.appendChild(opt);
+});
+
+function renderTextPanel(content) {
+  if (!content) {
+    textPanel.style.display = 'none';
+    return;
+  }
+  textPanel.style.display = 'block';
+  let html = '<h2>' + content.title + '</h2>';
+  if (content.subtitle) {
+    html += '<div class="subtitle-line">' + content.subtitle + '</div>';
+  }
+  if (content.type === 'link-table') {
+    html += '<div class="link-table">';
+    content.groups.forEach(g => {
+      html += '<div class="cat"><h3>' + g.name + '</h3><ul>';
+      g.items.forEach(it => { html += '<li>' + it + '</li>'; });
+      html += '</ul></div>';
+    });
+    html += '</div>';
+  } else if (content.items) {
+    html += '<ul class="sub-list">';
+    content.items.forEach(it => {
+      html += '<li><div class="num">' + it.no + '</div><div class="body">';
+      html += '<span class="zh-name">' + it.zh + '</span><span class="en-name">' + it.en + '</span>';
+      if (it.desc) html += '<div class="desc">' + it.desc + '</div>';
+      html += '</div></li>';
+    });
+    html += '</ul>';
+  }
+  textPanel.innerHTML = html;
+}
+
+function render(regionId) {
+  const region = REGIONS.find(r => r.id === regionId);
+  if (!region) return;
+
+  if (region.image) {
+    container.style.display = '';
+    imgEl.src = region.image;
+    imgEl.alt = region.name;
+  } else {
+    container.style.display = 'none';
+  }
+
+  renderTextPanel(region.textContent || region.extraPanel);
+}
+
+select.addEventListener('change', e => render(e.target.value));
+render(REGIONS[0].id);
+</script>
+</body>
+</html>
