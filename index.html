@@ -105,6 +105,70 @@
     font-size: 14px;
     line-height: 1.7;
   }
+  .clinical-notes {
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .problem-group {
+    border-left: 4px solid var(--gold);
+    padding-left: 14px;
+    margin-bottom: 4px;
+  }
+  .problem-group h3,
+  .note-section h3,
+  .subsection h4 {
+    color: var(--teal);
+    margin: 0;
+  }
+  .problem-group p {
+    margin: 4px 0 0;
+  }
+  .definition-list {
+    margin: 4px 0 0;
+    padding-left: 18px;
+  }
+  .definition-list li {
+    margin-top: 2px;
+  }
+  .note-section {
+    border-top: 1px solid #eee;
+    padding: 16px 0;
+  }
+  .note-section h3 {
+    font-size: 17px;
+    margin-bottom: 6px;
+  }
+  .detail-row {
+    display: flex;
+    gap: 4px;
+    align-items: baseline;
+    margin-top: 2px;
+  }
+  .detail-label {
+    color: var(--teal);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .detail-value {
+    color: #444;
+  }
+  .subsections {
+    margin-top: 10px;
+  }
+  .subsection {
+    border-left: 2px solid #e5d4a2;
+    padding: 8px 0 8px 12px;
+    margin-top: 8px;
+  }
+  .subsection h4 {
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+  @media (max-width: 640px) {
+    .detail-row {
+      display: block;
+    }
+  }
   .sub-list {
     list-style: none;
     padding: 0;
@@ -201,13 +265,69 @@ const REGIONS = [
     name: '髖韌帶—肌肉對應表',
     image: null,
     textContent: {
-      type: 'link-table',
+      type: 'clinical-notes',
       title: '髖部韌帶與相關肌肉對應',
-      groups: [
-        { name: '薦結節韌帶 Sacrotuberous', items: ['股二頭肌 Biceps femoris', '臀大肌 Gluteus maximus', '半腱肌 Semitendinosus'] },
-        { name: '薦棘韌帶 Sacrospinous', items: ['骨盆底肌 Pelvic floor', '髖外旋肌群 External rotators'] },
-        { name: '腹股溝韌帶 Inguinal', items: ['髂腰肌 Psoas', '股直肌 Rectus femoris', '腹斜肌 Obliques', '腹橫肌 TVA', '內收肌群 Adductors'] },
-        { name: '髂腰韌帶 Iliolumbar', items: ['腰方肌 Quadratus lumborum', '髂肌 Iliac'] }
+      problemTitle: '常見問題',
+      problems: '慣性髖緊卡、有壓迫、曾跌坐、喜翹腳、產後、骨盆核心障礙、下背痛、長短腿、步態問題',
+      sections: [
+        {
+          marker: 'a.',
+          title: '髂腰韌帶(IL)',
+          details: [
+            { label: '常見配對', value: '左右IL互相代償、同側SI to 同側腹股溝韌帶' },
+            { label: '位置', value: '髂骨—腰椎' },
+            { label: '作用肌肉', value: '同側QL、ES、Multifidus' },
+            { label: '常見症狀', value: '骨盆三平面翻轉' }
+          ]
+        },
+        {
+          marker: 'b.',
+          title: '薦髂韌帶(SI)',
+          details: [
+            { label: '常見配對', value: '左右SI互相代償' }
+          ],
+          subsections: [
+            {
+              title: '上1/3',
+              details: [
+                { label: '作用肌肉', value: 'Gmax、Gmed、ES、QL' },
+                { label: '常見症狀', value: '薦椎上1/3前旋轉' }
+              ]
+            },
+            {
+              title: '中1/3',
+              details: [
+                { label: '作用肌肉', value: 'Piriformis' },
+                { label: '常見症狀', value: '薦椎中1/3有左或右側翻轉，及坐骨神經問題' }
+              ]
+            },
+            {
+              title: '下1/3',
+              details: [
+                { label: '作用肌肉', value: '腿後、股方肌' },
+                { label: '常見症狀', value: '薦椎下1/3往前旋轉，及坐骨神經問題' }
+              ]
+            }
+          ]
+        },
+        {
+          marker: 'c.',
+          title: '骶結韌帶(ST)',
+          details: [
+            { label: '常見配對', value: '同側ST to 對側SS' },
+            { label: '位置', value: '坐骨粗隆往內上方連接薦椎' },
+            { label: '作用肌肉', value: '腿後、股方肌' }
+          ]
+        },
+        {
+          marker: 'd.',
+          title: '薦棘韌帶(SS)',
+          details: [
+            { label: '位置', value: 'ST之1/2往外＋往上一點點處' },
+            { label: '作用肌肉', value: 'OI、骨盆底肌' },
+            { label: '常見症狀', value: '骨盆底肌功能失常(漏尿)' }
+          ]
+        }
       ]
     }
   },
@@ -225,6 +345,96 @@ const REGIONS = [
     id: 'shoulder',
     name: '肩部韌帶',
     image: 'photos/Shoulder Ligament.png'
+  },
+  {
+    id: 'shoulder-link',
+    name: '肩韌帶－肌肉對應表',
+    image: null,
+    textContent: {
+      type: 'clinical-notes',
+      title: '肩韌帶與相關肌肉對應',
+      definitionTitle: '定義位置',
+      definitions: [
+        '喙突：肱骨頭內緣深層凸點',
+        '肩峰：肩外側凸點'
+      ],
+      sections: [
+        {
+          marker: 'a.',
+          title: '鎖間韌帶(TranseverseC)',
+          details: [
+            { label: '位置', value: '雙側鎖骨之間' },
+            { label: '影響', value: '肩胛骨' },
+            { label: '作用肌肉', value: '三角肌' }
+          ]
+        },
+        {
+          marker: 'b.',
+          title: '胸鎖韌帶(SC)',
+          details: [
+            { label: '常見配對', value: '同側AC to 對側SC' },
+            { label: '位置', value: '鎖骨—胸骨' },
+            { label: '影響', value: '鎖骨與肩胛骨' },
+            { label: '作用肌肉', value: '三角肌、外展相關、上舉相關' }
+          ]
+        },
+        {
+          marker: 'c.',
+          title: '喙鎖韌帶(CC)',
+          details: [
+            { label: '位置', value: '鎖骨外側1/3—喙突' },
+            { label: '影響', value: '鎖骨' },
+            { label: '作用肌肉', value: 'SCM、鎖骨下肌、胸大肌、三角肌' }
+          ]
+        },
+        {
+          marker: 'd.',
+          title: '喙肩韌帶(CA)',
+          details: [
+            { label: '位置', value: '喙突往外往上連到肩峰' },
+            { label: '影響', value: '肱骨' },
+            { label: '作用肌肉', value: '闊背肌、棘上肌' }
+          ]
+        },
+        {
+          marker: 'e.',
+          title: '肩鎖韌帶(AC)',
+          details: [
+            { label: '位置', value: '肩胛棘—鎖骨，與盂肱關節和旋轉肌有關' },
+            { label: '影響', value: '肱骨' },
+            { label: '作用肌肉', value: '三角肌、旋轉肌群 (棘上肌、棘下肌、肩胛下肌、小圓肌)' }
+          ]
+        },
+        {
+          marker: 'f.',
+          title: '喙肱韌帶(CH)',
+          details: [
+            { label: '位置', value: '喙突往前連到肱骨頭' },
+            { label: '影響', value: '肩胛骨' },
+            { label: '作用肌肉', value: '菱形肌、上斜方肌、水平外展相關' }
+          ]
+        },
+        {
+          marker: 'g.',
+          title: '盂肱韌帶(GH)',
+          details: [
+            { label: '位置', value: '前三角肌和胸肌的交界(前肩到胸整排)' },
+            { label: '影響', value: '肱骨' },
+            { label: '作用肌肉', value: '前關節囊、上斜方肌、中斜方肌、下斜方肌、肩外轉相關(棘下肌、大圓肌、小圓肌)' }
+          ]
+        },
+        {
+          marker: 'h.',
+          title: '後關節囊(P.Capsule)',
+          details: [
+            { label: '常見配對', value: '前後關節囊互相代償' },
+            { label: '位置', value: '手臂與身體之直角交界處' },
+            { label: '影響', value: '肱骨' },
+            { label: '常見症狀', value: '肱骨加/減壓問題' }
+          ]
+        }
+      ]
+    }
   }
 ];
 
@@ -258,6 +468,39 @@ function renderTextPanel(content) {
       html += '</ul></div>';
     });
     html += '</div>';
+  } else if (content.type === 'clinical-notes') {
+    html += '<div class="clinical-notes">';
+    if (content.problemTitle) {
+      html += '<div class="problem-group"><h3>' + content.problemTitle + '</h3><p>' + content.problems + '</p></div>';
+    }
+    if (content.definitionTitle) {
+      html += '<div class="problem-group"><h3>' + content.definitionTitle + '</h3><ul class="definition-list">';
+      content.definitions.forEach(definition => {
+        html += '<li>' + definition + '</li>';
+      });
+      html += '</ul></div>';
+    }
+    content.sections.forEach(section => {
+      html += '<section class="note-section"><h3>' + section.marker + ' ' + section.title + '</h3>';
+      if (section.details) {
+        section.details.forEach(detail => {
+          html += '<div class="detail-row"><span class="detail-label">' + detail.label + '：</span><span class="detail-value">' + detail.value + '</span></div>';
+        });
+      }
+      if (section.subsections) {
+        html += '<div class="subsections">';
+        section.subsections.forEach(subsection => {
+          html += '<div class="subsection"><h4>' + subsection.title + '</h4>';
+          subsection.details.forEach(detail => {
+            html += '<div class="detail-row"><span class="detail-label">' + detail.label + '：</span><span class="detail-value">' + detail.value + '</span></div>';
+          });
+          html += '</div>';
+        });
+        html += '</div>';
+      }
+      html += '</section>';
+    });
+    html += '</div>';
   } else if (content.items) {
     html += '<ul class="sub-list">';
     content.items.forEach(it => {
@@ -287,7 +530,11 @@ function render(regionId) {
 }
 
 select.addEventListener('change', e => render(e.target.value));
-render(REGIONS[0].id);
+
+const initialRegionId = window.location.hash.slice(1);
+const initialRegion = REGIONS.some(r => r.id === initialRegionId) ? initialRegionId : REGIONS[0].id;
+select.value = initialRegion;
+render(initialRegion);
 </script>
 </body>
 </html>
