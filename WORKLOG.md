@@ -31,3 +31,39 @@
 
 - The shoulder scapula/neck leader lines remain in place intentionally. Removing them would require retouching over anatomical shading and may degrade the original image.
 - The pushed site is GitHub Pages; propagation may take a short time after push.
+
+## 2026-06-30 09:29 CST
+
+### Main changes
+
+- Added and refined the ankle ligament reference section:
+  - Extracted the two ankle ligament diagrams from page 6 of the local NKT Level 3 PDF.
+  - Replaced the left diagram labels with `後距腓韌帶(PTFL)`, `前距腓韌帶(ATFL)`, and `跟腓韌帶(CF)`.
+  - Replaced the right diagram heading with `三角韌帶(Deltoid)`.
+  - Iteratively adjusted label masks and placement so the edited text does not cut into the original ankle anatomy art.
+  - Lowered the `跟腓韌帶(CF)` label after review so its white label area no longer overlaps the foot image.
+- Updated the ankle deltoid ligament detail panel:
+  - Changed the Chinese names to `前脛距韌帶`, `後脛距韌帶`, `脛跟韌帶`, and `脛舟韌帶`.
+  - Removed `脛距部韌帶`.
+  - Updated the subtitle from five bundles to four bundles.
+- Added the `踝韌帶－肌肉對應表` page with the requested ATFL, PTFL, CF, Deltoid, extensor retinaculum, and flexor retinaculum notes.
+
+### Verification
+
+- Rebuilt `photos/Ankle Ligament.png` from the rendered PDF page rather than stacking edits onto an already-modified PNG.
+- Reviewed intermediate and final PNG previews visually.
+- Generated Chrome headless page screenshots for:
+  - `#ankle`
+  - `#ankle-link`
+- Checked `git diff --stat`, `git status --short`, and recent commit history before and after push.
+
+### Deployment
+
+- Pushed ankle page implementation commit: `ef6ea8f Update ankle ligament reference page`.
+- Pushed ankle label refinement commit: `241186f Refine ankle ligament labels`.
+- At closeout, `main`, `origin/main`, and `origin/HEAD` all point to `241186f` before adding this work-log commit.
+
+### Known issues / notes
+
+- GitHub Pages may take a short time to refresh after pushes.
+- The source diagrams still include some original English anatomy labels that were not requested for replacement.
