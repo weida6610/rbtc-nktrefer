@@ -67,3 +67,41 @@
 
 - GitHub Pages may take a short time to refresh after pushes.
 - The source diagrams still include some original English anatomy labels that were not requested for replacement.
+
+## 2026-07-10 23:19 CST
+
+### Main changes
+
+- Moved the NKT reference site from the GitHub Pages project URL to the branded subdomain:
+  - New canonical URL: `https://nkt-refer.rbtctw.com`
+  - GitHub Pages source remains `weida6610/rbtc-nktrefer`, branch `main`, path `/`.
+- Added GitHub Pages custom-domain configuration:
+  - Created `CNAME` with `nkt-refer.rbtctw.com`.
+  - Pushed commit `047f0bc Add custom domain for NKT reference`.
+- Updated Wix DNS for `rbtctw.com`:
+  - Added CNAME record `nkt-refer.rbtctw.com -> weida6610.github.io`.
+  - Kept existing Wix A records, `www`, `coach-prep`, TXT, MX, and NS records unchanged.
+- Resolved GitHub Pages HTTPS certificate provisioning:
+  - Initial HTTPS stayed stuck with `The certificate does not exist yet`.
+  - Reset the GitHub Pages custom domain by removing it temporarily, then adding `nkt-refer.rbtctw.com` back.
+  - GitHub then generated an approved certificate for `nkt-refer.rbtctw.com`.
+  - Enabled `Enforce HTTPS`.
+- Added `CUSTOM_DOMAIN_RUNBOOK.md` so future GitHub Pages projects can follow the same branded-domain process.
+
+### Verification
+
+- Confirmed DNS:
+  - `dig CNAME nkt-refer.rbtctw.com +short` returned `weida6610.github.io.`
+- Confirmed GitHub Pages API:
+  - `status: built`
+  - `cname: nkt-refer.rbtctw.com`
+  - `https_certificate.state: approved`
+  - `https_enforced: true`
+- Confirmed HTTP/HTTPS behavior:
+  - `https://nkt-refer.rbtctw.com` returned `HTTP/2 200`.
+  - `http://nkt-refer.rbtctw.com` returned `301` redirect to HTTPS.
+
+### Known issues / notes
+
+- The repo is still public; the branded domain improves presentation but is not access control.
+- For future projects, if GitHub Pages says `The certificate does not exist yet` after DNS is correct, remove and re-add the Pages custom domain to restart certificate provisioning.
