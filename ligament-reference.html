@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>韌帶與關節囊檢測參考｜RBTC</title>
+<style>
+  :root {
+    --teal: #1f3d46;
+    --gold: #d9b25a;
+    --bg: #f5f4ef;
+    --line: #deded8;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: #222; font: 16px/1.6 "Noto Sans TC", -apple-system, BlinkMacSystemFont, sans-serif; }
+  header { background: var(--teal); color: #fff; }
+  header > div, main { max-width: 1320px; margin: auto; padding-inline: 20px; }
+  header > div { display: flex; align-items: baseline; gap: 6px 24px; flex-wrap: wrap; padding-block: 13px; }
+  header a { color: inherit; text-decoration-color: var(--gold); text-underline-offset: 4px; }
+  header span { font-size: 14px; }
+  main { padding-block: 24px 48px; }
+  h1, h2, h3, h4 { color: var(--teal); line-height: 1.35; }
+  h1 { margin: 0 0 14px; font-size: 28px; }
+  h2 { margin-block: 0 12px; font-size: 22px; }
+  h3 { font-size: 17px; }
+  h4 { margin-block: 18px 5px; font-size: 15px; }
+  a { color: var(--teal); }
+  :focus-visible { outline: 2px solid #856009; outline-offset: 3px; }
+  header a:focus-visible { outline-color: var(--gold); }
+  form { margin-bottom: 12px; }
+  form label { display: block; margin-bottom: 4px; font-weight: 700; }
+  .searchbox { position: relative; display: flex; align-items: center; max-width: 520px; }
+  .searchbox svg { position: absolute; left: 12px; pointer-events: none; color: var(--teal); }
+  input { width: 100%; min-width: 0; padding: 9px 12px 9px 40px; border: 1px solid #858f90; border-radius: 6px; font: inherit; color: inherit; background: #fff; }
+  .regions { display: flex; flex-wrap: wrap; gap: 6px; }
+  .regions button { padding: 6px 12px; border: 1px solid #838f90; border-radius: 5px; background: #fff; color: var(--teal); font: inherit; cursor: pointer; }
+  .regions button:hover { background: #e9e9e3; }
+  .regions button[aria-pressed="true"] { background: var(--teal); color: #fff; border-color: var(--teal); box-shadow: inset 0 -2px var(--gold); }
+  #count { margin: 10px 0 0; color: #4e5757; font-size: 14px; }
+  .intro { margin-block: 12px 22px; }
+  details summary { width: fit-content; color: var(--teal); font-weight: 700; cursor: pointer; }
+  p { margin-block: 0 10px; }
+  ul, ol { margin-block: 5px 12px; padding-inline-start: 24px; }
+  li + li { margin-top: 4px; }
+  .region { padding-block: 20px 24px; border-top: 2px solid var(--gold); }
+  .region-intro { max-width: 84ch; font-size: 15px; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; background: #fff; font-size: 14px; }
+  thead { background: var(--teal); color: #fff; }
+  th, td { padding: 10px; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+  thead th:nth-child(1), thead th:nth-child(4) { width: 13%; }
+  thead th:nth-child(5), thead th:nth-child(6) { width: 20%; }
+  tbody tr { border-bottom: 1px solid var(--line); }
+  tbody tr:nth-child(even) { background: #fafaf7; }
+  tbody th { color: var(--teal); }
+  .cell-label { display: none; }
+  .muscle-list { margin: 0; padding-inline-start: 1.15em; }
+  .muscle-list li + li { margin-top: 3px; }
+  .muscle-list li::marker { color: var(--teal); }
+  .muscle-list .muscle-list { margin-top: 2px; }
+  .muscle-group, .pairings strong { color: var(--teal); }
+  .pairings { margin-top: 7px; padding-top: 7px; border-top: 1px solid var(--line); }
+  .pairings strong { display: block; margin-bottom: 2px; }
+  .notes { padding-left: 14px; border-left: 3px solid var(--gold); margin-top: 18px; max-width: 84ch; font-size: 15px; }
+  .notes > :first-child { margin-top: 0; }
+  .sources { border-top: 1px solid var(--line); padding-top: 16px; font-size: 14px; }
+  .sources div { margin-top: 12px; }
+  footer { text-align: center; color: #555; padding: 16px; font-size: 12px; }
+  @media (max-width: 820px) {
+    header > div, main { padding-inline: 14px; }
+    h1 { font-size: 24px; }
+    table, tbody { display: block; background: transparent; }
+    thead { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    tbody tr { display: block; margin-bottom: 10px; border: 1px solid var(--line); border-radius: 6px; background: #fff; }
+    tbody tr:nth-child(even) { background: #fff; }
+    tbody th { display: block; padding: 10px 12px; border-bottom: 1px solid var(--line); font-size: 16px; }
+    td { display: grid; grid-template-columns: 7em minmax(0, 1fr); gap: 8px; padding: 6px 12px; }
+    td:last-child { padding-bottom: 12px; }
+    .cell-label { display: inline; font-weight: 700; color: var(--teal); }
+  }
+  @media (max-width: 360px) { td { grid-template-columns: 1fr; gap: 2px; } }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header><div>
+  <a href="index.html">返回 NKT 檢測參考圖</a>
+  <span>狂牛體能訓練中心</span>
+</div></header>
+<main>
+  <h1>韌帶與關節囊檢測參考</h1>
+  <form role="search">
+    <label for="query">搜尋結構或肌肉</label>
+    <div class="searchbox">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input id="query" type="search" placeholder="例如 ACL、股四頭肌" autocomplete="off">
+    </div>
+  </form>
+  <nav class="regions" id="regions" aria-label="區域篩選"></nav>
+  <p id="count" role="status"></p>
+  <details class="intro"><summary>檢測紀錄與判讀</summary><div id="intro"></div></details>
+  <div id="results"></div>
+  <details class="sources"><summary>資料來源</summary><div id="sources"></div></details>
+  <noscript>參考頁需要啟用 JavaScript。</noscript>
+</main>
+<footer>© 狂牛體能訓練中心 · 教練內部參考</footer>
+
+<script type="application/json" id="reference-data">
+{
+  "columns": {
+    "name": "結構",
+    "location": "位置",
+    "testMuscles": "測試肌肉",
+    "relatedMuscles": "相關肌肉",
+    "bonesAndMotion": "影響骨骼與動作",
+    "symptoms": "可能症狀與表現"
+  },
+  "intro": "供狂牛體能訓練中心教練內訓與上課查詢。\n\n- **測試肌肉**依 NKT 筆記和已核對的肩部對應表整理。側別、分區及測試情境沿用筆記。\n- **相關肌肉**記錄局部解剖鄰近、動態支撐或受力相關的肌肉。兩欄可能出現同一肌肉。\n- **影響骨骼與動作**同時記錄 NKT 觀察和解剖力學。**可能症狀與表現**同時保留原筆記的觀察與該區常見表現。\n- **—**表示該欄未記載。TL、Stim、Flip 或動作前後的改變是重測紀錄。判定結構受傷或鬆弛需合併病史與適當的臨床檢查。",
+  "regions": [
+    {
+      "id": "shoulder",
+      "name": "肩",
+      "intro": "**喙突**位於肩前、肱骨頭內側的深層觸診區，是肩胛骨向前突出的骨性標誌。從鎖骨外側段下方、三角肌與胸大肌交界附近向深層找。  \n**肩峰**是肩胛棘向外延伸至肩上外側的骨性平台。沿肩峰往內，與鎖骨外端相接處為 AC 關節線。",
+      "entries": [
+        {
+          "name": "鎖間韌帶（Interclavicular ligament）",
+          "location": "連接兩側鎖骨內端，跨過胸骨上切跡。",
+          "testMuscles": [
+            "三角肌"
+          ],
+          "relatedMuscles": [
+            "胸鎖乳突肌",
+            "鎖骨下肌"
+          ],
+          "bonesAndMotion": "NKT 觀察肩胛骨。解剖上連接兩側鎖骨內端。肩帶下壓時協助限制鎖骨內端上移，肩胛骨隨肩帶連動。",
+          "symptoms": "胸骨上切跡或鎖骨內端附近不適，提重物或下壓肩帶時可能加重。NKT 筆記：可能與恥骨聯合有關。"
+        },
+        {
+          "name": "SC 胸鎖韌帶",
+          "location": "鎖骨內端至胸骨柄，分為前、後胸鎖韌帶。",
+          "testMuscles": [
+            "三角肌",
+            "肩外展相關肌群",
+            "上舉相關肌群"
+          ],
+          "relatedMuscles": [
+            "鎖骨下肌",
+            "胸鎖乳突肌",
+            "胸大肌鎖骨部"
+          ],
+          "bonesAndMotion": "NKT 觀察鎖骨、肩胛骨，測肩外展與上舉。胸鎖關節囊限制鎖骨內端相對胸骨的前後平移，後側囊對兩個方向的穩定都重要。",
+          "symptoms": "鎖骨內端局部疼痛、腫脹或凸起，抬手、推或拉時可能不適。",
+          "commonPairs": [
+            "同側 AC to 對側 SC。"
+          ]
+        },
+        {
+          "name": "CC 喙鎖韌帶",
+          "location": "鎖骨外側三分之一的下表面至喙突，分為圓錐韌帶與斜方韌帶。",
+          "testMuscles": [
+            "胸鎖乳突肌（SCM）",
+            "鎖骨下肌",
+            "胸大肌",
+            "三角肌"
+          ],
+          "relatedMuscles": [
+            "三角肌、斜方肌參與局部肩帶控制。"
+          ],
+          "bonesAndMotion": "NKT 觀察鎖骨。解剖上連接鎖骨與肩胛骨，維持 AC 區垂直穩定並參與兩骨的旋轉耦合。",
+          "symptoms": "跌撞後肩上方疼痛，抬手或提物時可能不適。明顯 AC 分離時，鎖骨外端可能隆起。"
+        },
+        {
+          "name": "CA 喙肩韌帶",
+          "location": "喙突向外上方連到肩峰。",
+          "testMuscles": [
+            "闊背肌",
+            "棘上肌"
+          ],
+          "relatedMuscles": [
+            "棘上肌腱位於下方",
+            "三角肌位於表層"
+          ],
+          "bonesAndMotion": "NKT 觀察肱骨，可用肘貼身肩外旋篩查。喙突與肩峰都屬肩胛骨，兩者間的喙肩弓可限制肱骨頭過度上移。",
+          "symptoms": "抬手或過頭負荷時肩前外側疼痛，可與肩峰下疼痛表現重疊。"
+        },
+        {
+          "name": "AC 肩鎖韌帶",
+          "location": "肩峰至鎖骨外端，包繞 AC 關節囊。肩胛棘可用於定位肩峰。",
+          "testMuscles": [
+            "三角肌",
+            "旋轉肌群（棘上肌、棘下肌、肩胛下肌、小圓肌）"
+          ],
+          "relatedMuscles": [
+            "三角肌、斜方肌與 AC 區有局部關係。"
+          ],
+          "bonesAndMotion": "NKT 觀察肱骨，並留意盂肱關節及旋轉肌，可用肘貼身肩外旋篩查。解剖上直接穩定肩峰與鎖骨外端的前後平移，抬手時透過肩帶連動影響肱骨。",
+          "symptoms": "肩頂可一指指出的局部痛，手臂跨胸、伏地挺身或臥推時可能再現。"
+        },
+        {
+          "name": "CH 喙肱韌帶",
+          "location": "喙突基部至肱骨大、小結節，經過旋轉肌間隙。",
+          "testMuscles": [
+            "菱形肌",
+            "上斜方肌",
+            "水平外展相關肌群"
+          ],
+          "relatedMuscles": [
+            "鄰近棘上肌與肩胛下肌肌腱",
+            "與肱二頭肌長頭腱的滑車結構有關"
+          ],
+          "bonesAndMotion": "NKT 觀察肩胛骨及肩水平外展。解剖上跨肩胛骨與肱骨，協助限制肱骨頭下移，並在特定姿勢限制外旋。",
+          "symptoms": "肘貼身的被動外旋可能受限，可伴隨肩前上方拉扯或整體肩僵硬。"
+        },
+        {
+          "name": "GH 盂肱韌帶",
+          "location": "肩胛盂緣、盂唇附近至肱骨近端，為深層關節囊增厚。表面測試區為前三角肌與胸大肌交界，從前肩延伸至胸前。",
+          "testMuscles": [
+            "上、中、下斜方肌",
+            "NKT 肩外轉測項：棘下肌、大圓肌、小圓肌",
+            "對應組織：前關節囊"
+          ],
+          "relatedMuscles": [
+            "旋轉肌群提供盂肱關節動態穩定",
+            "肩胛下肌鄰近前關節囊",
+            "大圓肌的主要解剖動作包含肩內旋"
+          ],
+          "bonesAndMotion": "NKT 觀察肱骨及肩外旋，肘貼身比較兩側時可優先查 GH。上、中、下束依外展角度限制肱骨頭的下移、前移及旋轉。外展加外旋時，下盂肱韌帶前束特別重要。",
+          "symptoms": "前肩痛。外展外旋時可能有滑脫恐懼感，關節囊僵硬時可能外旋受限。"
+        },
+        {
+          "name": "P. Capsule 後關節囊",
+          "location": "肩胛盂後緣至肱骨近端後側的深層關節囊。手臂與軀幹成直角的交界可作表面接觸區。",
+          "testMuscles": [],
+          "relatedMuscles": [
+            "棘下肌",
+            "小圓肌",
+            "後三角肌"
+          ],
+          "bonesAndMotion": "NKT 觀察肱骨加壓／減壓反應。解剖上參與限制肱骨頭後移。後肩組織緊繃時，內旋或水平內收可能減少。",
+          "symptoms": "肱骨加壓／減壓時表現改變，可能伴隨肩後側緊繃、跨胸或內旋受限。",
+          "commonPairs": [
+            "前、後關節囊互相代償。"
+          ]
+        }
+      ],
+      "notes": "### 肩部測試流程\n\n**Yocum FMR**\n\n1. 手搭對側肩並抬肘，記錄原本的高度、疼痛及省力感。標準 Yocum 記錄是否誘發熟悉的肩痛。\n2. 若抬肘難以輕鬆高於水平，依序分別重測三個手法方向。肱骨用側下滑＋後上轉，鎖骨用上轉，肩胛骨由肩胛棘引導後傾。\n3. 找出變化較明顯的方向後，先測對應肌肉，再做韌帶 TL 並記錄 Flip。若有多條候選，依原 NKT 流程逐條進入 IM 確認。逆紋 Stim 為原課堂操作提示。\n4. 候選區與肌肉重疊時，可追加局部肌肉測試，並以同一抬肘條件重測。\n\n**肘貼身肩外旋**\n\n1. 肘貼身、屈肘，掌心朝上，大拇指朝外，比較兩側肩外旋角度及症狀。\n2. 依 NKT 筆記篩查 CA、AC、GH，尤其 GH。若主動與被動外旋均受限，可同步查看 CH、旋轉肌間隙及前關節囊。\n3. 第一次處理後，以同一姿勢再測肩外旋。依重測決定是否篩查第二條，控制 IM 的總量。"
+    },
+    {
+      "id": "elbow",
+      "name": "肘",
+      "intro": "",
+      "entries": [
+        {
+          "name": "UCL 尺側副韌帶",
+          "location": "肱骨內上髁下方凹槽深處。前束附於尺骨冠狀突內側的 sublime tubercle。",
+          "testMuscles": [
+            "同側：肱二頭肌、頸屈肌群、胸鎖乳突肌、旋前圓肌、腕伸肌群"
+          ],
+          "relatedMuscles": [
+            "屈腕旋前肌群（尤其尺側屈腕肌、旋前圓肌）可提供內側動態支撐。"
+          ],
+          "bonesAndMotion": "肱骨—尺骨，主要抵抗肘外翻。NKT 測項涉及肘屈、前臂旋前與腕伸。",
+          "symptoms": "肘內側痛，投擲或外翻受力時可能加重。"
+        },
+        {
+          "name": "RCL 橈側副韌帶",
+          "location": "肱骨外上髁下方連至環狀韌帶，與其纖維融合。橈骨頭可作為區域路標。",
+          "testMuscles": [
+            "肱三頭肌",
+            "旋後肌",
+            "腕屈肌"
+          ],
+          "relatedMuscles": [
+            "旋後肌與肘外側韌帶複合體有局部關聯。"
+          ],
+          "bonesAndMotion": "參與肘外側穩定及抵抗內翻。若觀察到後外側旋轉不穩，應一併考慮外側尺副韌帶等結構。NKT 測項涉及肘伸、前臂旋後與腕屈。",
+          "symptoms": "肘外側痛或承重不穩感，推椅起身時有時會喀響或出現滑脫感。"
+        },
+        {
+          "name": "環狀韌帶",
+          "location": "環繞橈骨頭，兩端附於尺骨橈切跡前、後緣。",
+          "testMuscles": [
+            "肱二頭肌"
+          ],
+          "relatedMuscles": [
+            "旋後肌與前臂旋前肌群。"
+          ],
+          "bonesAndMotion": "維持橈骨頭相對尺骨的關節穩定，允許前臂旋前、旋後。",
+          "symptoms": "橈骨頭周圍痛、旋轉受限或彈響。"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "knee",
+      "name": "膝",
+      "intro": "ACL／PCL 的前後方向均指**脛骨相對股骨**。兩者的 NKT TL 接觸區皆為手掌包覆整個膝前，實際附著位置見主表。",
+      "entries": [
+        {
+          "name": "LCL 膝外側副韌帶",
+          "location": "股骨外上髁附近至腓骨頭外側。",
+          "testMuscles": [
+            "同側：股四頭肌、股二頭肌"
+          ],
+          "relatedMuscles": [
+            "股二頭肌肌腱也附於腓骨頭，位置接近 LCL。"
+          ],
+          "bonesAndMotion": "股骨—腓骨。NKT 看冠狀面及旋轉面。主要抵抗膝內翻，旋轉不穩亦涉及膝後外側複合體。",
+          "symptoms": "膝外側或髂脛束區覺得卡、不順，或出現外側壓痛、受內翻負荷時疼痛或不穩。"
+        },
+        {
+          "name": "MCL 膝內側副韌帶",
+          "location": "股骨內上髁附近至脛骨內側，深層纖維與內側半月板相連。",
+          "testMuscles": [
+            "同側：髖內收肌群、膕肌、半腱肌、半膜肌、縫匠肌、股薄肌"
+          ],
+          "relatedMuscles": [
+            "鵝足由縫匠肌、股薄肌、半腱肌組成，位於近端脛骨內側。"
+          ],
+          "bonesAndMotion": "股骨—脛骨。NKT 看冠狀面及旋轉面。主要抵抗膝外翻，並協助控制旋轉。",
+          "symptoms": "膝內側異樣、疼痛或壓痛，外翻承重或轉向時可能再現。"
+        },
+        {
+          "name": "髕骨韌帶／髕腱（Patellar ligament）",
+          "location": "髕骨下極至脛骨粗隆。",
+          "testMuscles": [
+            "同側股四頭肌，尤其股直肌。"
+          ],
+          "relatedMuscles": [
+            "股四頭肌透過股四頭肌腱與髕骨傳力至髕腱。"
+          ],
+          "bonesAndMotion": "髕骨—脛骨。NKT 觀察髖、膝、踝矢狀面。傳遞伸膝力量。",
+          "symptoms": "髕骨下緣異常或局部疼痛，跳躍、落地、下蹲或抗阻伸膝時可能出現。"
+        },
+        {
+          "name": "髕骨內側支持帶",
+          "location": "髕骨內側緣與內側伸膝裝置、筋膜及關節囊相連。內側穩定結構包含內側髕股韌帶（MPFL）。",
+          "testMuscles": [
+            "股內側肌",
+            "股薄肌",
+            "縫匠肌"
+          ],
+          "relatedMuscles": [
+            "股內側肌與髕骨內側伸膝裝置關係較直接。"
+          ],
+          "bonesAndMotion": "NKT 看冠狀面及旋轉面。觀察髕骨相對股骨滑車內外側平移及傾斜。MPFL 主要抵抗髕骨外移。",
+          "symptoms": "髕骨內緣壓痛，髕骨往外半脫位或脫位後可能在內側疼痛。"
+        },
+        {
+          "name": "髕骨外側支持帶",
+          "location": "髕骨外側緣，與外側股四頭肌腱膜、關節囊及髂脛束纖維相連。",
+          "testMuscles": [
+            "股外側肌",
+            "闊筋膜張肌（TFL）"
+          ],
+          "relatedMuscles": [
+            "股外側肌與外側伸膝裝置相連",
+            "闊筋膜張肌經髂脛束間接相關"
+          ],
+          "bonesAndMotion": "髕骨相對股骨滑車的內外側滑移及傾斜。外側組織緊繃時可伴隨髕骨內滑減少。",
+          "symptoms": "髕骨外緣或前外側疼痛，深蹲、樓梯或久坐彎膝時可能加重。"
+        },
+        {
+          "name": "ACL 前十字韌帶",
+          "location": "脛骨前髁間區至股骨外髁內側面，位於膝關節深處。",
+          "testMuscles": [
+            "同側：股四頭肌、腹直肌、頸屈肌、胸鎖乳突肌、胸大肌、肩胛下肌",
+            "對側：腿後肌群"
+          ],
+          "relatedMuscles": [
+            "腿後肌與股四頭肌會依關節角度、負荷及動作方式改變脛骨剪力。"
+          ],
+          "bonesAndMotion": "股骨—脛骨。前移脛骨會對 ACL 加張力。以矢狀面的前移控制為主，也參與旋轉穩定。NKT 同步觀察冠狀面與旋轉代償。",
+          "symptoms": "受傷時可能有爆裂感、短時間腫脹、膝蓋軟掉，轉向時可能不穩。",
+          "commonPairs": [
+            "ACL 與 MCL。"
+          ]
+        },
+        {
+          "name": "PCL 後十字韌帶",
+          "location": "脛骨後髁間區至股骨內髁外側面，位於膝關節深處。",
+          "testMuscles": [
+            "同側：腿後肌、豎脊肌、頸伸肌、肩外旋肌（尤其棘下肌）",
+            "對側：股四頭肌"
+          ],
+          "relatedMuscles": [
+            "股四頭肌能協助控制脛骨後移",
+            "腿後肌在某些角度會增加後向剪力"
+          ],
+          "bonesAndMotion": "股骨—脛骨。後移脛骨會對 PCL 加張力。以矢狀面的後移控制為主，尤其在屈膝受力時。",
+          "symptoms": "屈膝撞擊後可能疼痛、腫脹或不穩。下樓、下坡或減速時有時較明顯。",
+          "commonPairs": [
+            "PCL 與 LCL。"
+          ]
+        },
+        {
+          "name": "近端前側脛腓韌帶",
+          "location": "腓骨頭前面至脛骨外側髁前外側。脛骨粗隆可當前方體表路標。",
+          "testMuscles": [
+            "同側：脛前肌、腓骨長肌、腓骨短肌、趾伸肌群"
+          ],
+          "relatedMuscles": [],
+          "bonesAndMotion": "脛骨外側髁—腓骨頭，協助限制近端脛腓關節的前後滑移及旋轉。",
+          "symptoms": "腓骨頭前外側痛、彈響或滑動感，蹲下或踝活動時可能再現。"
+        },
+        {
+          "name": "近端後側脛腓韌帶",
+          "location": "腓骨頭後面至脛骨外側髁後外側。腓骨頭後下方凹槽為體表接觸區。",
+          "testMuscles": [
+            "同側：股二頭肌、腓腸肌、脛後肌、趾屈肌群"
+          ],
+          "relatedMuscles": [
+            "股二頭肌肌腱與腓骨頭有直接局部關聯。"
+          ],
+          "bonesAndMotion": "脛骨外側髁—腓骨頭，參與近端脛腓關節後側穩定。",
+          "symptoms": "腓骨頭後外側痛或不穩。若有小腿外側或足背麻感，留意鄰近的腓總神經。"
+        }
+      ],
+      "notes": "### 膝部測試流程\n\n**ACL**\n\n1. 以短暫脛骨前移作刺激 → TL 包覆整個膝前 → IM。\n2. 確認配對時，可用脛骨前移同時 Stim 候選結構，例如 MCL。\n3. 另一條路徑為先讓脛骨後滑，再重測同側股四頭肌、腹直肌、胸大肌、頸屈肌與對側腿後肌等測試肌。\n4. 若懷疑結構性鬆弛，可由合格臨床人員以 Lachman 等檢查搭配受傷史判讀。\n\n**ACL 訓練筆記**  \n原筆記在「ACL 為代償者」時觀察脛骨後滑控制，可考慮腿後肌向心與股四頭肌離心訓練。若功能重測支持前向剪力控制不足，腿後肌訓練可作為選項。股四頭肌離心可用來建立減速與承重能力，實際 ACL 負荷取決於膝角度、阻力與動作方式。\n\n**PCL**\n\n1. 以短暫脛骨後移作刺激 → TL 包覆整個膝前 → IM。\n2. 另一條路徑為先讓脛骨前移，再重測同側腿後肌、豎脊肌、肩外旋肌與頸伸肌等測試肌。\n3. 若懷疑結構性鬆弛，可由合格臨床人員以後抽屜或後墜徵象搭配病史判讀。\n\n**PCL 訓練筆記**  \n已確認 PCL 損傷時，早期復健通常著重股四頭肌。腿後肌負荷依復健階段調整。"
+    },
+    {
+      "id": "ankle",
+      "name": "踝",
+      "intro": "",
+      "entries": [
+        {
+          "name": "ATFL 前距腓韌帶",
+          "location": "遠端腓骨的外踝前緣至距骨頸外側。",
+          "testMuscles": [
+            "腓骨長肌",
+            "腓骨短肌",
+            "第三腓骨肌",
+            "同側頸屈肌（例如前斜角肌）"
+          ],
+          "relatedMuscles": [
+            "腓骨長、短肌參與足踝外側動態穩定。"
+          ],
+          "bonesAndMotion": "NKT 觀察腓骨。解剖上連接腓骨與距骨，限制距骨前移，尤其在蹠屈時，也協助抵抗內翻與內旋。",
+          "symptoms": "外踝前下方痛、腫脹。典型受傷方向為蹠屈合併內翻。"
+        },
+        {
+          "name": "PTFL 後距腓韌帶",
+          "location": "外踝內側的踝窩至距骨後外側。",
+          "testMuscles": [
+            "腓骨長肌",
+            "腓骨短肌",
+            "第三腓骨肌",
+            "同側頸伸肌（原記 SC）"
+          ],
+          "relatedMuscles": [],
+          "bonesAndMotion": "腓骨、距骨。協助限制距骨後移及外旋，背屈時受力較大。",
+          "symptoms": "外踝後方深層痛。單獨受傷較少見，可伴隨較嚴重的外側踝傷。"
+        },
+        {
+          "name": "CFL 跟腓韌帶",
+          "location": "外踝尖端附近向後下連至跟骨外側，位於腓骨肌腱深層。",
+          "testMuscles": [
+            "小腿外側肌群",
+            "腿後系列"
+          ],
+          "relatedMuscles": [
+            "腓骨長、短肌腱跨過其表層。"
+          ],
+          "bonesAndMotion": "腓骨、跟骨。跨踝關節及距下關節，主要限制內翻，在中立或背屈位較重要。",
+          "symptoms": "外踝下方壓痛，側向移動或不平地面可出現不適或不穩。"
+        },
+        {
+          "name": "Deltoid 三角韌帶",
+          "location": "自內踝扇形展開。淺層至跟骨、舟狀骨及彈簧韌帶區等，深層脛距纖維連至距骨，包含前、後脛距束。",
+          "testMuscles": [
+            "脛後肌",
+            "趾長屈肌",
+            "同側：股四頭肌、肩胛下肌、上斜方肌"
+          ],
+          "relatedMuscles": [
+            "脛後肌腱、趾長屈肌腱與內踝後側區域相鄰。"
+          ],
+          "bonesAndMotion": "NKT 觀察距骨、跟骨、舟狀骨及中足。韌帶複合體主要抵抗外翻與距骨外旋，維持內踝穩定。",
+          "symptoms": "內踝下方痛、腫脹，外翻或外旋負荷時較可能再現。"
+        },
+        {
+          "name": "伸肌支持帶",
+          "location": "上伸肌支持帶橫跨遠端脛、腓骨前方。下伸肌支持帶多呈 Y 形，自跟骨外側跨至足踝前方。",
+          "testMuscles": [
+            "脛前肌",
+            "脛後肌"
+          ],
+          "relatedMuscles": [
+            "帶下肌腱：脛前肌、拇長伸肌、趾長伸肌、第三腓骨肌"
+          ],
+          "bonesAndMotion": "NKT 觀察距骨。解剖上主要維持踝前伸肌腱走向，防止肌腱在收縮時弓起。",
+          "symptoms": "踝前痛或壓迫感，鞋帶加壓、反覆背屈或伸趾時可能再現。"
+        },
+        {
+          "name": "屈肌支持帶",
+          "location": "從脛骨內踝跨至跟骨內側，構成跗管頂部。",
+          "testMuscles": [
+            "脛前肌",
+            "脛後肌",
+            "趾長屈肌"
+          ],
+          "relatedMuscles": [
+            "帶下肌腱：脛後肌、趾長屈肌、拇長屈肌"
+          ],
+          "bonesAndMotion": "NKT 觀察脛骨。解剖上連接內踝與跟骨，維持肌腱走向並形成跗管。",
+          "symptoms": "內踝後方疼痛。合併脛神經刺激時，可能伴隨足底麻、灼熱或刺感。"
+        }
+      ],
+      "notes": "### 踝部測試流程\n\n**脛骨偏移測試**\n\n1. 脛骨垂直地面，從外向內支撐。\n2. 脛骨前傾，再從外向內支撐。\n3. 脛骨前傾加外移，再從外向內支撐。\n4. 比較三個條件的承重或動作表現。做韌帶 TL 後，記錄在哪個條件出現 Flip。\n\n**Flow Joint Play**\n\n1. 扶住腳踝輕微擺動，觀察動作傳向脊椎的程度。\n2. 依序比較距骨內下轉 → 中足外翻 → 跟骨外翻。\n3. 記錄每一方向對原測試的變化，例如承重前傾角度、疼痛或足底壓力感。"
+    },
+    {
+      "id": "anterior-hip",
+      "name": "骨盆髖前",
+      "intro": "",
+      "entries": [
+        {
+          "name": "腹股溝韌帶",
+          "location": "ASIS 下內側，由 ASIS 至恥骨結節，為腹外斜肌腱膜下緣增厚。",
+          "testMuscles": [
+            "股四頭肌",
+            "內收肌群",
+            "髖屈肌（髂肌）",
+            "髖伸肌（臀大肌）"
+          ],
+          "relatedMuscles": [
+            "腹外斜肌腱膜與韌帶直接相連",
+            "髂腰肌自深面通過"
+          ],
+          "bonesAndMotion": "髂骨—恥骨，形成腹股溝區的解剖邊界。髖屈、髖內旋或 FABER 可用來重現症狀。",
+          "symptoms": "髖屈、髖內旋或 FABER 時髖前拉扯。髂腰肌、內收肌及髖關節症狀也可出現在同區。",
+          "commonPairs": [
+            "同側 SI 與同側腹股溝韌帶。"
+          ]
+        },
+        {
+          "name": "髂股韌帶（Y ligament）",
+          "location": "由 ASIS 向內下方可找髂前下棘（AIIS）。韌帶從 AIIS 與鄰近髖臼緣分為上、下束，連至股骨前側轉子間線。",
+          "testMuscles": [
+            "橫向測項：髖外展肌群",
+            "直向測項：臀大肌、梨狀肌"
+          ],
+          "relatedMuscles": [
+            "股直肌的近端附著鄰近 AIIS。"
+          ],
+          "bonesAndMotion": "骨盆—股骨。主要限制髖過伸及特定角度的外旋，下束較關聯伸展限制，上束在外旋時較受力。可比較伸展與伸展加外旋。",
+          "symptoms": "髖屈、髖內旋或 FABER 時髖前拉扯。髖伸展或伸展合併外旋時，也可出現前側張力。"
+        },
+        {
+          "name": "恥股韌帶",
+          "location": "起於恥骨上支與前下方髖臼附近，與髖前下側關節囊及髂股韌帶下束相融。",
+          "testMuscles": [
+            "內收肌群（尤其恥骨肌）",
+            "通常從腰大肌或股直肌起測"
+          ],
+          "relatedMuscles": [
+            "恥骨肌位於前內側髖區，與恥骨上支有局部關聯。"
+          ],
+          "bonesAndMotion": "恥骨側髖臼—股骨近端。主要限制過度外展，並參與髖伸展位的前下方穩定。",
+          "symptoms": "髖前內側或腹股溝拉扯，可能在外展加伸展時出現，可與內收肌或關節囊症狀重疊。"
+        },
+        {
+          "name": "恥骨聯合",
+          "location": "兩側恥骨間的纖維軟骨關節，由周圍恥骨韌帶加強。",
+          "testMuscles": [
+            "腹直肌",
+            "腹橫肌",
+            "雙側內收肌群"
+          ],
+          "relatedMuscles": [
+            "腹直肌與內收長肌在恥骨前方有局部腱膜關聯。"
+          ],
+          "bonesAndMotion": "左右恥骨，承受骨盆環的壓縮與剪力，平時僅有小幅相對移動。",
+          "symptoms": "NKT 可見腹直肌、腹橫肌、雙側內收肌群同步測弱。也可能有恥骨正中或腹股溝痛，跑步、踢球、變向或單腳承重時加重。",
+          "commonPairs": [
+            "SI、劍突、SC、鎖間韌帶。"
+          ]
+        }
+      ],
+      "notes": "### 骨盆髖前測試流程\n\n**恥骨聯合 NKT 重測**\n\n1. 記錄腹直肌、腹橫肌及左右內收肌的測試結果。\n2. 若原測試情境需要查配對，逐一比對恥骨聯合「測試肌肉」欄中的候選結構。\n3. 在相同姿勢下重測原測項，記錄變化及是否重現熟悉症狀。\n\n髖前拉扯可分別在髖伸展、外展、內旋及 FABER 下比較。恥股韌帶的原筆記起測肌為腰大肌或股直肌。"
+    },
+    {
+      "id": "posterior-hip",
+      "name": "骨盆髖後",
+      "intro": "原筆記的整體篩查線索包括慣性髖部緊卡或壓迫感、跌坐史、常翹腳、產後、骨盆與核心控制困難、下背痛、長短腳觀察及步態問題。",
+      "entries": [
+        {
+          "name": "IL 髂腰韌帶",
+          "location": "主要由 L5 橫突連到髂嵴內側，部分個體另有 L4 纖維。",
+          "testMuscles": [
+            "同側：腰方肌、豎脊肌、多裂肌"
+          ],
+          "relatedMuscles": [
+            "鄰近腰方肌及腰椎後側深層肌群，與周圍筋膜有局部關係。"
+          ],
+          "bonesAndMotion": "腰椎—髂骨。NKT 觀察骨盆三平面翻轉。解剖上協助穩定腰薦交界，受側彎、旋轉及剪力影響。",
+          "symptoms": "骨盆三平面動作不對稱。可能有靠近後髂嵴的局部下背痛，側彎、轉身或長時間承重時再現。",
+          "commonPairs": [
+            "左右 IL。"
+          ]
+        },
+        {
+          "name": "SI 薦髂韌帶複合體",
+          "location": "後髂骨與薦骨之間有短、長後薦髂韌帶，另有深層骨間韌帶與前薦髂韌帶。上、中、下三分區為 NKT 的表面接觸區。",
+          "testMuscles": [
+            "上區：臀大肌、臀中肌、豎脊肌、腰方肌",
+            "中區：梨狀肌",
+            "下區：腿後肌、股方肌"
+          ],
+          "relatedMuscles": [
+            "豎脊肌與骨盆後方筋膜受力可與長後薦髂韌帶連動。"
+          ],
+          "bonesAndMotion": "髂骨—薦骨，以小幅三平面運動傳遞負荷。長後薦髂韌帶協助限制薦骨反點頭。NKT 觀察上區前旋、中區左右側翻、下區前旋。",
+          "symptoms": "PSIS 附近或單側臀部痛，翻身、跨步或單腳承重時可能加重。原筆記亦在中、下區記錄坐骨神經樣症狀，需同時考慮其他來源。",
+          "commonPairs": [
+            "左右 SI",
+            "同側 SI 與同側腹股溝韌帶。"
+          ]
+        },
+        {
+          "name": "ST 薦結節韌帶（Sacrotuberous ligament）",
+          "location": "自坐骨粗隆向內上連至薦骨外側、尾骨及後髂骨附近。",
+          "testMuscles": [
+            "腿後肌",
+            "股方肌"
+          ],
+          "relatedMuscles": [
+            "與區域張力有解剖或力學關聯：股二頭肌長頭、臀大肌、梨狀肌"
+          ],
+          "bonesAndMotion": "薦骨／尾骨—坐骨粗隆，協助限制薦骨過度點頭。NKT 比較俯臥髖伸與薦骨接觸後的反應。",
+          "symptoms": "深臀部或坐骨粗隆內側不適，久坐、跨步或髖伸負荷時可能出現，可與近端腿後肌症狀重疊。",
+          "commonPairs": [
+            "同側 ST 與對側 SS。"
+          ]
+        },
+        {
+          "name": "SS 薦棘韌帶（Sacrospinous ligament）",
+          "location": "薦骨、尾骨外側至坐骨棘，位於 ST 深層。原筆記以 ST 中點偏外上作體表參考。",
+          "testMuscles": [
+            "閉孔內肌",
+            "骨盆底肌"
+          ],
+          "relatedMuscles": [
+            "尾骨肌與 SS 相鄰，部分纖維重疊。"
+          ],
+          "bonesAndMotion": "薦骨／尾骨—坐骨棘，協助限制過度點頭，與 ST 共同界定坐骨大、小孔。",
+          "symptoms": "可能與深臀部或骨盆底區症狀重疊。原筆記記錄骨盆底功能異常與漏尿，應另外評估其來源。",
+          "commonPairs": [
+            "同側 ST 與對側 SS。"
+          ]
+        }
+      ],
+      "notes": "### 骨盆髖後測試流程\n\n1. **PSIS 動態觸診。** 接觸 PSIS，受測者向前抬腿，比較兩側 PSIS 的後下移動感。記錄哪一側有差異。\n2. **俯臥薦骨觀察。** 比較雙側薦骨的凹凸、高低及局部反應，供 SI 區後續篩查。\n3. **俯臥髖伸重測。** 先比較左右髖伸，再加入薦骨接觸或輕壓重測。原筆記把髖伸較低側列為 ST 篩查側。\n4. **局部張力。** 用手法張力比較各接觸區，並重測原本的動作或熟悉症狀。\n\nPSIS 移動感和薦骨高低可記為動作觀察。若評估 SI 區疼痛來源，可比對病史及一組疼痛誘發測試。以觸診定位 SI 個別韌帶或薦骨分段旋轉的證據有限。"
+    },
+    {
+      "id": "spine",
+      "name": "脊椎",
+      "intro": "",
+      "entries": [
+        {
+          "name": "棘上韌帶",
+          "location": "沿背側正中連接多節棘突尖端，NKT 可觀察表面凹凸折點。",
+          "testMuscles": [],
+          "relatedMuscles": [
+            "鄰近組織：胸腰筋膜、豎脊肌腱膜、多裂肌"
+          ],
+          "bonesAndMotion": "相鄰多節棘突。矢狀面，與其他後方組織共同分擔前屈末端張力。觀察前彎、後仰時相對少動區。",
+          "symptoms": "背側正中局部壓痛，前彎末端可能再現。原筆記亦觀察局部棘突凹凸及前彎、後仰少動。",
+          "commonPairs": [
+            "上、下兩到三節與 Lovett Reactor。"
+          ]
+        },
+        {
+          "name": "棘間韌帶",
+          "location": "相鄰兩節棘突之間，位於棘上韌帶深側。",
+          "testMuscles": [],
+          "relatedMuscles": [
+            "棘間肌、局部多裂肌及筋膜。"
+          ],
+          "bonesAndMotion": "相鄰棘突。矢狀面，協助抵抗屈曲時棘突分離。原筆記觀察前彎、後仰時 2–3 節同時少動。",
+          "symptoms": "棘突間局部壓痛，前彎末端可能不適。"
+        },
+        {
+          "name": "橫突間韌帶",
+          "location": "位於相鄰橫突之間，各脊椎區段與肌筋膜融合的程度不同。",
+          "testMuscles": [],
+          "relatedMuscles": [
+            "橫突間肌",
+            "腰段可觀察腰方肌與鄰近深層豎脊肌"
+          ],
+          "bonesAndMotion": "相鄰橫突。以冠狀面為主，側彎時對側受張力，也可觀察耦合旋轉。",
+          "symptoms": "局部偏側緊繃或痛，側彎或側彎合併旋轉可能再現。原筆記觀察側彎或旋轉折點過多或過少。"
+        }
+      ],
+      "notes": "### 脊椎測試流程\n\n- 分別比較前彎、後仰、側彎及旋轉，記錄原筆記中的少動區、折點與是否重現熟悉症狀。\n- 腰椎節段觸診在不同檢查者間的一致性有限，可把觸診結果與主動動作一併記錄。"
+    }
+  ],
+  "sources": "- 肩的 NKT 測試肌肉及配對取自 [RBTC NKT 檢測參考圖「肩韌帶－肌肉對應表」](https://nkt-refer.rbtctw.com/)。其他測試肌肉與流程依本次提供的 NKT 課堂筆記。\n- 肩部解剖與力學參考 [盂肱關節](https://www.ncbi.nlm.nih.gov/books/NBK537018/)、[肩鎖關節](https://www.ncbi.nlm.nih.gov/books/NBK499858/)、[胸鎖關節位移限制](https://pubmed.ncbi.nlm.nih.gov/11845148/)。\n- 膝部解剖與復健參考 [膝關節解剖](https://www.ncbi.nlm.nih.gov/books/NBK500017/)、[近端脛腓關節不穩](https://pubmed.ncbi.nlm.nih.gov/36913522/)、[Aspetar ACL 復健指引](https://doi.org/10.1136/bjsports-2022-106158)、[PCL 評估與處置回顧](https://pmc.ncbi.nlm.nih.gov/articles/PMC12875799/)。\n- 踝部解剖參考 [踝關節外科解剖](https://doi.org/10.1155/2013/182650)與 [足踝支持帶超音波解剖](https://pmc.ncbi.nlm.nih.gov/articles/PMC7151198/)。\n- 骨盆與髖部參考 [髖關節囊解剖與力學](https://pmc.ncbi.nlm.nih.gov/articles/PMC7406151/)、[腹股溝韌帶解剖](https://www.ncbi.nlm.nih.gov/books/NBK542321/figure/article-23528.image.f1/)、[恥骨聯合影像與解剖](https://doi.org/10.1148/rg.220058)、[骨盆筋膜](https://www.ncbi.nlm.nih.gov/books/NBK518984/)與 [薦髂關節複合體疼痛共識](https://pmc.ncbi.nlm.nih.gov/articles/PMC12681192/)。\n- 脊椎及肘部參考 [腰椎韌帶](https://www.wheelessonline.com/ISSLS/lumbar-vertebrae-ligaments/)、[下背痛觸診的信效度](https://pubmed.ncbi.nlm.nih.gov/34446040/)與 [肘副韌帶解剖](https://www.ncbi.nlm.nih.gov/books/NBK560907/)。\n\n- 測試判讀參考 [肩部理學檢查系統性回顧](https://bjsm.bmj.com/content/42/2/80.short)與 [應用肌動學徒手肌力測試信度回顧](https://pubmed.ncbi.nlm.nih.gov/41236460/)。"
+}
+</script>
+<script>
+  const data = JSON.parse(document.getElementById('reference-data').textContent);
+
+  function element(tag, text, className) {
+    const node = document.createElement(tag);
+    if (text) node.textContent = text;
+    if (className) node.className = className;
+    return node;
+  }
+
+  function inline(parent, text) {
+    const tokens = /\*\*([^*]+)\*\*|\[([^\]]+)\]\((https:\/\/[^\s)]+)\)| {2}\r?\n/g;
+    let start = 0;
+    for (const match of text.matchAll(tokens)) {
+      parent.append(text.slice(start, match.index));
+      if (match[1]) parent.append(element('strong', match[1]));
+      else if (match[2]) {
+        const link = element('a', match[2]);
+        link.href = match[3];
+        parent.append(link);
+      } else parent.append(element('br'));
+      start = match.index + match[0].length;
+    }
+    parent.append(text.slice(start));
+  }
+
+  // Prose in the source uses only headings, lists, paragraphs and inline emphasis/links.
+  function prose(parent, text) {
+    for (const block of text.split(/\r?\n\s*\r?\n/).filter(Boolean)) {
+      const lines = block.split(/\r?\n/);
+      const heading = block.match(/^\*\*([^*]+)\*\*[ \t]*(?:\r?\n|$)/);
+      if (block.startsWith('### ')) parent.append(element('h3', block.slice(4)));
+      else if (heading) {
+        parent.append(element('h4', heading[1]));
+        if (lines.length > 1) {
+          const paragraph = element('p');
+          inline(paragraph, lines.slice(1).join('\n'));
+          parent.append(paragraph);
+        }
+      } else if (/^(?:- |\d+\. )/.test(block)) {
+        const list = element(block.startsWith('- ') ? 'ul' : 'ol');
+        for (const line of lines) {
+          const li = element('li');
+          inline(li, line.replace(/^(?:- |\d+\. )/, ''));
+          list.append(li);
+        }
+        parent.append(list);
+      } else {
+        const paragraph = element('p');
+        inline(paragraph, block);
+        parent.append(paragraph);
+      }
+    }
+  }
+
+  const normalize = text => text.normalize('NFKC').toLowerCase();
+  const aliases = [
+    ['肩外旋', '肩外轉', 'ER'], ['胸鎖乳突肌', 'SCM'], ['腓骨長肌', 'PL'],
+    ['腓骨短肌', 'PB'], ['第三腓骨肌', 'PT'], ['脛前肌', 'TA'], ['脛後肌', 'TP'],
+    ['趾長屈肌', '屈趾長肌', 'FDL'], ['前斜角肌', 'A.Scalene'],
+    ['上斜方肌', 'U.Trap'], ['腰方肌', 'QL'], ['豎脊肌', 'ES'], ['多裂肌', 'Multifidus'],
+    ['臀大肌', 'Gmax'], ['臀中肌', 'Gmed'], ['閉孔內肌', 'OI'],
+    ['鎖間韌帶', 'TranseverseC'], ['薦結節韌帶', '骶結韌帶'],
+    ['前距腓韌帶', 'Anterior talofibular ligament', 'Anterior talo-fibular ligament'],
+    ['後距腓韌帶', 'Posterior talofibular ligament', 'Posterior talo-fibular ligament'],
+    ['跟腓韌帶', 'CF', 'Calcaneofibular ligament', 'Calcaneo-fibular ligament'],
+    ['前十字韌帶', 'Anterior cruciate ligament'], ['後十字韌帶', 'Posterior cruciate ligament'],
+  ];
+  const terms = value => normalize(value).match(/[a-z0-9]+|\p{Script=Han}+/gu) || [];
+  const latinWords = value => normalize(value).match(/[a-z0-9]+/g) || [];
+
+  function searchIndex(entry) {
+    const primary = [entry.name, ...entry.testMuscles, ...entry.relatedMuscles].join(' ');
+    const context = `${primary} ${entry.bonesAndMotion}`;
+    const extras = aliases.flatMap(([label, ...synonyms]) =>
+      (label === '肩外旋' ? context : primary).includes(label) ? [label, ...synonyms] : []);
+    const value = normalize([primary, ...extras].join(' '));
+    return { value, words: new Set(latinWords(value)) };
+  }
+
+  function bulletList(items, groupMuscles = false) {
+    const list = element('ul', '', 'muscle-list');
+    for (const item of items) {
+      const group = groupMuscles && item.match(/^(同側|對側|上區|中區|下區|NKT 肩外轉測項|橫向測項|直向測項|帶下肌腱|鄰近組織|與區域張力有解剖或力學關聯)：(.+)$/);
+      const li = element('li');
+      if (group) {
+        const names = group[2].split('、');
+        li.append(element('strong', `${group[1]}：`, 'muscle-group'));
+        li.append(names.length > 1 ? bulletList(names) : group[2]);
+      } else li.textContent = item;
+      list.append(li);
+    }
+    return list;
+  }
+
+  function muscleCell(items, pairs) {
+    const content = element('div');
+    content.append(items.length ? bulletList(items, true) : element('span', '—'));
+    if (pairs?.length) {
+      const block = element('div', '', 'pairings');
+      block.append(element('strong', '常見配對'));
+      block.append(pairs.length > 1 ? bulletList(pairs) : element('span', pairs[0]));
+      content.append(block);
+    }
+    return content;
+  }
+
+  const columns = Object.entries(data.columns);
+  function buildTable(region) {
+    const table = element('table');
+    table.setAttribute('role', 'table');
+    table.setAttribute('aria-labelledby', `heading-${region.id}`);
+    const head = table.createTHead();
+    head.setAttribute('role', 'rowgroup');
+    const header = head.insertRow();
+    header.setAttribute('role', 'row');
+    for (const [, label] of columns) {
+      const th = element('th', label);
+      th.scope = 'col';
+      th.setAttribute('role', 'columnheader');
+      header.append(th);
+    }
+    const body = table.createTBody();
+    body.setAttribute('role', 'rowgroup');
+    const rows = region.entries.map(entry => {
+      const row = body.insertRow();
+      row.setAttribute('role', 'row');
+      for (const [key, label] of columns) {
+        if (key === 'name') {
+          const th = element('th', entry[key]);
+          th.scope = 'row';
+          th.setAttribute('role', 'rowheader');
+          row.append(th);
+        } else {
+          const labelNode = element('span', label, 'cell-label');
+          labelNode.setAttribute('aria-hidden', 'true');
+          const cell = row.insertCell();
+          cell.setAttribute('role', 'cell');
+          const content = Array.isArray(entry[key])
+            ? muscleCell(entry[key], key === 'testMuscles' ? entry.commonPairs : undefined)
+            : element('span', entry[key]);
+          cell.append(labelNode, content);
+        }
+      }
+      return { row, ...searchIndex(entry) };
+    });
+    return { table, rows };
+  }
+
+  const query = document.getElementById('query');
+  const resultRoot = document.getElementById('results');
+  const count = document.getElementById('count');
+  prose(document.getElementById('intro'), data.intro);
+  prose(document.getElementById('sources'), data.sources);
+  const groups = data.regions.map(region => {
+    const section = element('section', '', 'region');
+    const heading = element('h2', region.name);
+    heading.id = `heading-${region.id}`;
+    section.append(heading);
+    if (region.intro) {
+      const intro = element('div', '', 'region-intro');
+      prose(intro, region.intro);
+      section.append(intro);
+    }
+    const { table, rows } = buildTable(region);
+    section.append(table);
+    if (region.notes) {
+      const notes = element('div', '', 'notes');
+      prose(notes, region.notes);
+      section.append(notes);
+    }
+    resultRoot.append(section);
+    return { id: region.id, section, rows };
+  });
+
+  let selected = '';
+  const buttons = [{ id: '', name: '全部' }, ...data.regions].map(({ id, name }) => {
+    const button = element('button', name);
+    button.type = 'button';
+    button.addEventListener('click', () => {
+      selected = id;
+      filter();
+    });
+    document.getElementById('regions').append(button);
+    return { id, button };
+  });
+
+  function filter() {
+    const words = terms(query.value);
+    let total = 0;
+    for (const { id, button } of buttons) button.setAttribute('aria-pressed', id === selected);
+    for (const { id, section, rows } of groups) {
+      let visible = 0;
+      for (const { row, value, words: indexWords } of rows) {
+        row.hidden = !words.every(word => /^[a-z0-9]+$/.test(word) ? indexWords.has(word) : value.includes(word));
+        if (!row.hidden) visible++;
+      }
+      section.hidden = (selected !== '' && selected !== id) || visible === 0;
+      if (!section.hidden) total += visible;
+    }
+    count.textContent = total ? `${total} 條結構` : '沒有符合的結構';
+  }
+
+  query.addEventListener('input', filter);
+  query.form.addEventListener('submit', event => event.preventDefault());
+  filter();
+</script>
+</body>
+</html>

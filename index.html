@@ -36,6 +36,12 @@
     font-size: 13px;
     opacity: 0.75;
   }
+  header .reference-link {
+    color: #fff;
+    font-size: 14px;
+    text-decoration-color: var(--gold);
+    text-underline-offset: 4px;
+  }
   #region-select {
     margin-left: auto;
     padding: 8px 14px;
@@ -222,7 +228,8 @@
 <header>
   <h1>NKT 檢測參考圖</h1>
   <span class="subtitle">韌帶・肌肉分布</span>
-  <select id="region-select"></select>
+  <a class="reference-link" href="ligament-reference.html">韌帶與關節囊檢測參考</a>
+  <select id="region-select" aria-label="參考圖區域"></select>
 </header>
 <main>
   <div class="image-container" id="img-container">
